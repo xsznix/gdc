@@ -6,4 +6,4 @@ else
 	read -p "Please enter your UTCS username: " utcsname
 	echo $utcsname > ~/.utcsname
 fi
-ssh $utcsname@$(../gdc-get-low-load-host).cs.utexas.edu
+ssh $utcsname@$($(dirname "$0")/../gdc-get-low-load-host).cs.utexas.edu
