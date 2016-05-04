@@ -1,0 +1,29 @@
+#!/usr/bin/env node
+
+const jsdom = require('node-jsdom');
+jsdom.env('https://apps.cs.utexas.edu/unixlabstatus/', [], function (err, window) {
+	const document = window.document;
+	const machines = [].slice.call(
+		document.body.querySelectorAll('#bodycontent > table tr'), 3)
+		.map(function ($row) {
+			const $cells = [].slice.call($row.querySelectorAll('td'), 0);
+			return {
+				host:   getText($cells[0]),
+				stat:   getText($cells[1]),
+				up:     getText($cells[2]),
+				users: +getText($cells[3]),
+				load:  +getText($cells[4]),
+			};
+		})
+		.filter(function (machine) { return machine.stat === 'up' })
+		.sort(function (a, b) { return cmp(a.load, b.load) || cmp(a.users, b.users) });
+	console.log(machines[0].host);
+})
+
+function getText (node) {
+	return node.childNodes ? node.childNodes[0] ? node.childNodes[0].data : '' : '';
+}
+
+function cmp (a, b) {
+	return a > b ? 1 : a < b ? -1 : 0;
+}
