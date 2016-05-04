@@ -2,6 +2,10 @@
 
 const jsdom = require('node-jsdom');
 jsdom.env('https://apps.cs.utexas.edu/unixlabstatus/', [], function (err, window) {
+	if (err) {
+		console.log('Error loading lab status page: ' + err);
+		return;
+	}
 	const document = window.document;
 	const machines = [].slice.call(
 		document.body.querySelectorAll('#bodycontent > table tr'), 3)
